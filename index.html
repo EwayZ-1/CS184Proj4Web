@@ -31,14 +31,19 @@
     <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2017</h1>
     <h1 align="middle">Project 4: Cloth Simulator</h1>
     <h2 align="middle">Tinna Liu, Yiwei Zhou, CS184-fighting-tinna-ew</h2>
+    <h2 align="middle">https://ewayz-1.github.io/CS184Proj4Web/</h2>
 
-    <br><br>
+
+    <br>
 
     <div>
 
         <h2 align="middle">Overview</h2>
-        <p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole.
-            Share your thoughts on what interesting things you've learned from completing the project.</p>
+        <p>In this project we implemented the collision and physics simulation. In the first part we implemented masspoints and springs to describe the physcial character of the cloth object.
+            In the second part, we implemented the simulation with numerical integration to simulate the motion of the cloth. 
+            In the third part, we computed the collision between object and primitives. In this case, we implemented the collision between the objects (cloth), sphere and plane. 
+            In the fourth part, we added the self-collisions of the cloth. It guaranteed that the cloth will collide with itself to avoid it through itself.
+            In the fifth part, we modifies different kinds of shader - Diffuse, Blinn-Phong, Texture Mapping, Displacement and Bump Mapping, and Environment-mapped Reflections to provide vivid visual effects on the objects.</p>
 
         <h2 align="middle">Part I: Masses and springs</h2>
 
@@ -382,7 +387,8 @@
                 </tr>
             </table>
         </div>
-        <h3>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</h3>
+        <h3>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in
+            /textures/.</h3>
         <div align="middle">
             <table style="width:100%">
                 <tr align="center">
@@ -391,7 +397,62 @@
                 </tr>
             </table>
         </div>
-        <h3>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that's not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16 and then -o 128 -a 128.</h3>
+        <h3>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement
+            mapping on the sphere. Compare the two approaches and resulting renders in your own words. Compare how
+            your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16
+            and then -o 128 -a 128.
+        </h3>
+        Although both appraches produces texture, bump shading does so by only manipulating colors to create the
+        illusion of texture, while displacement shading does so by a combination of manipulating colors and actually
+        shifting the vertices. Therefore, on the rendered result from bump shading, the edge of the ball is smooth,
+        but the resulting ball from displacement shading has a rough edge where the narrow bands are actually
+        falling inwards. <br>
+        When changing coarseness from 16 to 128, there is not much observable difference from the bump shader.
+        However, for the dispacement shader, we can clearly see that the bands are coming inwards with coarseness
+        equals 128, while this is not obvious with coarseness equals 16.
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        -o 16 -a 16
+                    </td>
+                    <td>
+                        -o 128 -a 128
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/part5-bump-ball-16.png" align="middle" width="400px" />
+                        <figcaption>bump ball 16</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/part5-bump-ball-128.png" align="middle" width="400px" />
+                        <figcaption>bump ball 128</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/part5-bump-cloth-16.png" align="middle" width="400px" />
+                        <figcaption>bump cloth 16</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/part5-bump-cloth-128.png" align="middle" width="400px" />
+                        <figcaption>bump cloth 128</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/part5-disp-ball-16.png" align="middle" width="400px" />
+                        <figcaption>displacement ball 16</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/part5-disp-ball-128.png" align="middle" width="400px" />
+                        <figcaption>displacement ball 128</figcaption>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
         <h3>Show a screenshot of your mirror shader on the cloth and on the sphere.</h3>
         <div align="middle">
             <table style="width:100%">
