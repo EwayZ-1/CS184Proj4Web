@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <style>
+        body {
+            padding: 100px;
+            width: 1000px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+            color: #121212;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+    </style>
+    <title>CS 184 Mesh Editor</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+    <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2017</h1>
+    <h1 align="middle">Project 4: Cloth Simulator</h1>
+    <h2 align="middle">Tinna Liu, Yiwei Zhou, CS184-fighting-tinna-ew</h2>
+
+    <br><br>
+
+    <div>
+
+        <h2 align="middle">Overview</h2>
+        <p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole.
+            Share your thoughts on what interesting things you've learned from completing the project.</p>
+
+        <h2 align="middle">Part I: Masses and springs</h2>
+
+        <h3>
+            Take some screenshots of scene/pinned2.json from a viewing angle where you can clearly see the cloth
+            wireframe to show the structure of your point masses and springs.
+        </h3>
+        <br>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part1-1.png" align="middle" width="600px" />
+                    <figcaption>viewpoint 1</figcaption>
+                    <img src="images/part1-2.png" align="middle" width="600px" />
+                    <figcaption>viewpoint 2</figcaption>
+                    <img src="images/part1-3.png" align="middle" width="600px" />
+                    <figcaption>viewpoint 3</figcaption>
+                </tr>
+            </table>
+        </div>
+        <br>
+
+        <h3>
+            Show us what the wireframe looks like (1) without any shearing constraints, (2) with only shearing
+            constraints, and (3) with all constraints.
+        </h3>
+
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part1-4.png" align="middle" width="600px" />
+                    <figcaption>without any shearing constraints</figcaption>
+                    <img src="images/part1-5.png" align="middle" width="600px" />
+                    <figcaption>with only shearing constraints</figcaption>
+                    <img src="images/part1-6.png" align="middle" width="600px" />
+                    <figcaption>with all constraints</figcaption>
+                </tr>
+            </table>
+        </div>
+        <br>
+
+        <h2 align="middle">Part II: Simulation via numerical integration</h2>
+        <h3> Experiment with some the parameters in the simulation. To do so, pause the simulation at the start with P,
+            modify the values of interest, and then resume by pressing P again. You can also restart the simulation at
+            any time from the cloth's starting position by pressing R.
+        </h3>
+        <ul>
+            <li>
+                <h4>Describe the effects of changing the spring constant ks; how does the cloth behave from start to
+                    rest with a very low ks? A high ks?</h4>
+                Changing ks affects the rigidness of the cloth. With a very low ks, the cloth stretches more when
+                released, and I can clearly see that the cloth bends forwards and backwards as it drops down. With a
+                high ks, the cloth behaves more like a rigid object. The bending behavior decreases, and the final
+                stretch is much less than before.
+                <br>
+                <div align="middle">
+                    <table style="width:100%">
+                        <tr align="center">
+                            <img src="images/part2-1-orig.png" align="middle" width="600px" />
+                            <figcaption>origin with ks = 5000</figcaption>
+                            <img src="images/part2-ks100.png" align="middle" width="600px" />
+                            <figcaption>ks = 100</figcaption>
+                            <img src="images/part2-ks100000.png" align="middle" width="600px" />
+                            <figcaption>ks = 100000</figcaption>
+                        </tr>
+                    </table>
+                </div>
+            </li>
+            <li>
+                <h4>What about for density?</h4>
+                Change density affects how much the cloth swings back and forth when it falls down. With low density,
+                the cloth looks very light so that it does not swing back and forth that much, and the final stretch is
+                less. With high density, the cloth becomes very heavy. I can observe some bending at the bottom of the
+                cloth when it drops down, and it streches more.
+                <br>
+                <div align="middle">
+                    <table style="width:100%">
+                        <tr align="center">
+                            <img src="images/part2-density15-orig.png" align="middle" width="600px" />
+                            <figcaption>origin with density = 15</figcaption>
+                            <img src="images/part2-density1.png" align="middle" width="600px" />
+                            <figcaption>density = 1</figcaption>
+                            <img src="images/part2-density1000.png" align="middle" width="600px" />
+                            <figcaption>density = 1000</figcaption>
+                        </tr>
+                    </table>
+                </div>
+            </li>
+            <li>
+                <h4>What about for damping?</h4>
+                Change damping affects the "softness" of the cloth. With the low damping, it falls down quickly, its
+                shape changes rapidly, and ripples on its surface. This affect makes it looks like silk. With the high
+                damping, it falls down slowly, its shape changes slowly, and its surface is firm. This makes it looks
+                hard denim.
+                <br>
+                <div align="middle">
+                    <table style="width:100%">
+                        <tr align="center">
+                            <img src="images/part2-damping-0.2.png" align="middle" width="600px" />
+                            <figcaption>origin with damping = 0.2</figcaption>
+                            <img src="images/part2-damping-0.05.png" align="middle" width="600px" />
+                            <figcaption>damping = 0.05</figcaption>
+                            <img src="images/part2-damping-0.8.png" align="middle" width="600px" />
+                            <figcaption>damping = 0.8</figcaption>
+                        </tr>
+                    </table>
+                </div>
+            </li>
+        </ul>
+        <h3>Show us a screenshot of your shaded cloth from scene/pinned4.json in its final resting state! If you choose
+            to use different parameters than the default ones, please list them.</h3>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part2-2.png" align="middle" width="600px" />
+                    <figcaption>default parameters</figcaption>
+
+                </tr>
+            </table>
+        </div>
+        <br>
+
+        <h2 align="middle">Part III: Handling collisions with other objects</h2>
+        <h3>Show us screenshots of your shaded cloth from scene/sphere.json in its final resting state on the sphere
+            using the default ks = 5000 as well as with ks = 500 and ks = 50000. Describe the differences in the
+            results.</h3>
+        With ks=500, the cloth seems more stretchy. When it collides with the sphere, we can clearly see how the impact
+        causes the cloth to swing inwards and outwards. The cloth also stretches more towards the bottom. With ks=5000,
+        the cloth becomes less stretchy. There is only a light swinging from the edges of the cloth at collision, and
+        the stretch is less than before. With ks=50000, the cloth seems really rigid. There is no swinging at collision,
+        and there are less wrinkles on the cloth.
+        <br>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part3-500ks.png" align="middle" width="600px" />
+                    <figcaption>ks = 500</figcaption>
+                    <img src="images/part3-5000ks.png" align="middle" width="600px" />
+                    <figcaption>ks = 5000</figcaption>
+                    <img src="images/part3-50000ks.png" align="middle" width="600px" />
+                    <figcaption>ks = 50000</figcaption>
+                </tr>
+            </table>
+        </div>
+        <h3>Show us a screenshot of your shaded cloth lying peacefully at rest on the plane.</h3>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part3-plane.png" align="middle" width="600px" />
+                    <figcaption>peace</figcaption>
+                </tr>
+            </table>
+        </div>
+        <h2>Part IV: Handling self-collisions</h2>
+        <h3>Show us at least 3 screenshots that document how your cloth falls and folds on itself, starting with an
+            early, initial self-collision and ending with the cloth at a more restful state (even if it is still
+            slightly bouncy on the ground).</h3>
+        <br>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part4-0-0.png" align="middle" width="600px" />
+                    <figcaption>just started falling</figcaption>
+                    <img src="images/part4-0-1.png" align="middle" width="600px" />
+                    <figcaption>finished falling</figcaption>
+                    <img src="images/part4-0-2.png" align="middle" width="600px" />
+                    <figcaption>restful state</figcaption>
+                </tr>
+            </table>
+        </div>
+        <h3>Vary the density as well as ks and describe with words and screenshots how they affect the behavior of the
+            cloth as it falls on itself.</h3>
+        <ul>
+            <li>
+                <h4>Density</h4>
+                When the cloth first starts to fall, cloth with smaller density has larger "waves" and cloth with larger
+                density
+                has smaller but denser "waves". When the entire piece of cloth has fallen down to the plane, smaller
+                density
+                leads to larger folds while larger density leads to smaller but more winkles.
+                <div align="middle">
+                    <table style="width:100%">
+                        <tr align="center">
+                            <td>
+                                density = 3.0 g/cm^2
+                            </td>
+                            <td>
+                                density = 15.0 g/cm^2
+                            </td>
+                            <td>
+                                density = 100.0 g/cm^2
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-density3-1.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density15-1.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density100-1.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-density3-2.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density15-2.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density100-2.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-density3-3.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density15-3.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-density100-3.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </li>
+            <li>
+                <h4>ks</h4>
+                When the cloth first starts to fall, cloth with smaller ks has smaller waves at the bottom, while cloth
+                with larger ks has larger waves. Larger ks makes the cloth easier to unfold after the entire piece drops
+                to the plane.
+                <div align="middle">
+                    <table style="width:100%">
+                        <tr align="center">
+                            <td>
+                                ks = 50 N/m
+                            </td>
+                            <td>
+                                ks = 5000 N/m
+                            </td>
+                            <td>
+                                ks = 50000 N/m
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-005k-0.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks5k-0.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks50k-0.png" align="middle" width="400px" />
+                                <figcaption>just started falling</figcaption>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-005k-1.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks5k-1.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks50k-1.png" align="middle" width="400px" />
+                                <figcaption>finished falling</figcaption>
+                            </td>
+                        </tr>
+                        <tr align="center">
+                            <td>
+                                <img src="images/part4-005k-2.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks5k-2.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                            <td>
+                                <img src="images/part4-ks50k-2.png" align="middle" width="400px" />
+                                <figcaption>restful state</figcaption>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </li>
+        </ul>
+        <h2>Task V: Environment-mapped Reflections</h2>
+        <h3>Explain in your own words what is a shader program and how vertex and fragment shaders work together to
+            create lighting and material effects.</h3>
+        Sharder program helps us to create a visual effects like material effect and lighting in a 3D scene. Vertex
+        shader helps us to build up the object in the world coordinate, transform the position from object space ot
+        world space.
+        Fragment Sharder takes the position information and light information processed by vertex sharder to compute the
+        color value of each pixel of the object.
+        <br>
+        <h3>Explain the Blinn-Phong shading model in your own words.</h3>
+        Bling-Phone shading model gives a combination of three types of shading: diffuse shading, specular shading, and
+        ambient shading. Diffuse shading is independent of viewing direction, and is scattered uniformly in all
+        directions. Specular shading depends on viewing direction and represents the light that travels towards camera
+        direction. Ambient shading is a constant color that is added to the scene.
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="images/part5-ambient.png" align="middle" width="500px" />
+                        <figcaption>ambient</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/part5-diffuse.png" align="middle" width="500px" />
+                        <figcaption>diffuse</figcaption>
+                    </td>
+                </tr>
+                <tr align="center">
+                    <td>
+                        <img src="images/part5-specular.png" align="middle" width="500px" />
+                        <figcaption>specular</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/part5-phong.png" align="middle" width="500px" />
+                        <figcaption>phong</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h3>Show a screenshot of your texture mapping shader using your own custom texture by modifying the textures in /textures/.</h3>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part6-pika.png" align="middle" width="600px" />
+                    <figcaption>pikachu</figcaption>
+                </tr>
+            </table>
+        </div>
+        <h3>Show a screenshot of bump mapping on the cloth and on the sphere. Show a screenshot of displacement mapping on the sphere. Use the same texture for both renders. You can either provide your own texture or use one of the ones in the textures directory, BUT choose one that's not the default texture_2.png. Compare the two approaches and resulting renders in your own words. Compare how your the two shaders react to the sphere by changing the sphere mesh's coarseness by using -o 16 -a 16 and then -o 128 -a 128.</h3>
+        <h3>Show a screenshot of your mirror shader on the cloth and on the sphere.</h3>
+        <div align="middle">
+            <table style="width:100%">
+                <tr align="center">
+                    <img src="images/part6-sphere.png" align="middle" width="600px" />
+                    <figcaption>mirror sphere</figcaption>
+                    <img src="images/part6-cloth.png" align="middle" width="600px" />
+                    <figcaption>mirror cloth</figcaption>
+                    <img src="images/part6-final.png" align="middle" width="600px" />
+                    <figcaption>mirror final</figcaption>
+                </tr>
+            </table>
+        </div>
+</body>
+
+</html>
